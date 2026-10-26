@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
@@ -12,7 +13,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return Category::all();
+        return Category::all()->map(
+            fn (Category $category) => $this->withImageUrl($category)
+        );
     }
 
     /**
@@ -36,7 +39,9 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        return Category::findOrFail($id);
+        return $this->withImageUrl(
+            Category::findOrFail($id)
+        );
     }
 
     /**
@@ -69,5 +74,14 @@ class CategoryController extends Controller
         return response()->json([
             'message' => 'Category deleted successfully'
         ]);
+    }
+
+    private function withImageUrl(Category $category): Category
+    {
+        $category->image_url = $category->image_path
+            ? url(Storage::url($category->image_path))
+            : null;
+
+        return $category;
     }
 }

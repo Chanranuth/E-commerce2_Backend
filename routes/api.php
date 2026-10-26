@@ -11,6 +11,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Api\Admin\CategoryImageController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -60,6 +61,7 @@ Route::delete('/order-items/{id}', [OrderItemController::class, 'destroy'])->mid
 
 Route::get('/admin/users', [AdminController::class, 'users'])->middleware('auth:sanctum', 'admin');
 Route::get('/admin/orders', [AdminController::class, 'orders'])->middleware('auth:sanctum', 'admin');
+Route::put('/admin/categories/{category}/image', [CategoryImageController::class, 'update'])->middleware(['auth:sanctum', 'admin']);
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
